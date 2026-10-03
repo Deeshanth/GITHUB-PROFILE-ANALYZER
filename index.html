@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Profile Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <svg class="github-icon" viewBox="0 0 16 16" width="36" height="36" fill="currentColor">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+        <div class="header-text">
+          <h1>GitHub Profile Analyzer</h1>
+          <p>Discover developer statistics, language insights & repository highlights</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <form id="search-form" class="search-form">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" viewBox="0 0 16 16" width="18" height="18" fill="currentColor">
+            <path d="M10.68 11.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04ZM11.5 7a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0Z"></path>
+          </svg>
+          <input 
+            type="text" 
+            id="username-input" 
+            placeholder="Enter GitHub username (e.g. octocat)..." 
+            autocomplete="off" 
+            required 
+          />
+        </div>
+        <button type="submit" id="search-btn" class="btn btn-primary">Analyze Profile</button>
+      </form>
+
+      <!-- Preset Chips -->
+      <div class="presets-container">
+        <span class="presets-label">Try searching:</span>
+        <button class="preset-chip" data-user="octocat">octocat</button>
+        <button class="preset-chip" data-user="torvalds">torvalds</button>
+        <button class="preset-chip" data-user="gaearon">gaearon</button>
+        <button class="preset-chip" data-user="yyx99">yyx99</button>
+      </div>
+    </section>
+
+    <!-- Feedback States -->
+    <div id="loader" class="loader-container hidden">
+      <div class="spinner"></div>
+      <p>Analyzing GitHub profile & repositories...</p>
+    </div>
+
+    <div id="error-banner" class="error-banner hidden">
+      <svg class="error-icon" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+        <path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"></path>
+      </svg>
+      <span id="error-message">User not found. Please try another username.</span>
+    </div>
+
+    <!-- Main Results Dashboard -->
+    <main id="dashboard" class="dashboard hidden">
+      <!-- Profile Header Card -->
+      <section class="card profile-card">
+        <div class="profile-header-top">
+          <img id="user-avatar" class="user-avatar" src="" alt="User Avatar" />
+          <div class="profile-identity">
+            <h2 id="user-name" class="user-name">Developer Name</h2>
+            <a id="user-login" class="user-login" href="#" target="_blank">@username</a>
+            <p id="user-bio" class="user-bio">Bio description goes here...</p>
+            <div class="user-joined">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0ZM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V7.5Zm10.5-2V3.75a.25.25 0 0 0-.25-.25H2.75a.25.25 0 0 0-.25.25V5.5Z"></path>
+              </svg>
+              <span id="joined-date">Joined Date</span>
+            </div>
+          </div>
+          <div class="profile-action">
+            <a id="github-link" class="btn btn-secondary" href="#" target="_blank" rel="noopener noreferrer">
+              View on GitHub
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <path d="M3.75 2h3.5a.75.75 0 0 1 0 1.5h-3.5a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h8.5a.25.25 0 0 0 .25-.25v-3.5a.75.75 0 0 1 1.5 0v3.5A1.75 1.75 0 0 1 12.25 14h-8.5A1.75 1.75 0 0 1 2 12.25v-8.5C2 2.784 2.784 2 3.75 2Zm6.854-1h4.146a.75.75 0 0 1 .75.75v4.146a.75.75 0 0 1-1.5 0V3.56L8.03 9.53a.75.75 0 0 1-1.06-1.06l5.97-5.97H10.6a.75.75 0 0 1 0-1.5Z"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="profile-details-grid">
+          <div class="detail-item" id="location-item">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0a5 5 0 0 0-5 5c0 3.328 3.52 7.742 4.57 8.98a.565.565 0 0 0 .86 0C9.48 12.742 13 8.328 13 5a5 5 0 0 0-5-5zm0 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+            <span id="user-location">Not specified</span>
+          </div>
+          <div class="detail-item" id="company-item">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M1.75 2.5h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14.5H1.75A1.75 1.75 0 0 1 0 12.75v-8.5C0 3.284.784 2.5 1.75 2.5ZM1.5 4.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Z"/></svg>
+            <span id="user-company">Not specified</span>
+          </div>
+          <div class="detail-item" id="blog-item">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25zm-4.69 9.64a3.5 3.5 0 0 0 4.95 0l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 0 4.95z"/></svg>
+            <a id="user-blog" href="#" target="_blank" rel="noopener">Not specified</a>
+          </div>
+          <div class="detail-item" id="twitter-item">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M14.254 3.4a5.617 5.617 0 0 1-1.614.442A2.822 2.822 0 0 0 13.876 2.3a5.633 5.633 0 0 1-1.785.682A2.81 2.81 0 0 0 7.3 5.553a7.973 7.973 0 0 1-5.79-2.935 2.812 2.812 0 0 0 .87 3.751 2.784 2.784 0 0 1-1.273-.352v.035a2.814 2.814 0 0 0 2.256 2.759 2.827 2.827 0 0 1-1.269.048 2.816 2.816 0 0 0 2.629 1.954 5.64 5.64 0 0 1-4.148 1.161A7.95 7.95 0 0 0 8.847 13.5c5.21 0 8.058-4.316 8.058-8.058 0-.123-.003-.245-.008-.367A5.76 5.76 0 0 0 14.254 3.4z"/></svg>
+            <a id="user-twitter" href="#" target="_blank" rel="noopener">Not specified</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Metrics Stats -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-title">Public Repos</span>
+          <span id="stat-repos" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Total Stars</span>
+          <span id="stat-stars" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Followers</span>
+          <span id="stat-followers" class="stat-value">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title">Following</span>
+          <span id="stat-following" class="stat-value">0</span>
+        </div>
+      </section>
+
+      <!-- Analytics Section (Languages & Featured Repo) -->
+      <section class="analytics-grid">
+        <!-- Language Breakdown Card -->
+        <div class="card analytics-card">
+          <div class="card-header">
+            <h3>Top Languages</h3>
+            <span class="card-subtitle">Based on public repositories</span>
+          </div>
+          <div id="language-bars-container" class="language-bars-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Highlights / Most Starred Repo Card -->
+        <div class="card analytics-card">
+          <div class="card-header">
+            <h3>Most Starred Repository</h3>
+            <span class="card-subtitle">Top repository by stargazers</span>
+          </div>
+          <div id="featured-repo-container" class="featured-repo-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Repositories Grid Section -->
+      <section class="repos-section">
+        <div class="repos-header">
+          <h3>Top Repositories</h3>
+          <span class="repos-count" id="repos-subtitle">Showing top public repositories</span>
+        </div>
+        <div id="repos-grid" class="repos-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
